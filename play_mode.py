@@ -33,7 +33,26 @@ def init():
     boy = Boy()
     game_world.add_object(boy, 1)
 
-    # fill here
+    global balls
+    balls = [Ball(random.randint(100, 1600-100), 60, 0) for _ in range(30)]
+    game_world.add_objects(balls, 1)
+    game_world.add_collision_pair('boy:ball', boy, None)
+
+    for ball in balls:
+        game_world.add_collision_pair('boy:ball', None, ball)
+    
+    print(123)
+    
+    global Zombies
+    Zombies = [Zombie() for _ in range(5)]
+    game_world.add_objects(Zombies, 1)
+    
+    game_world.add_collision_pair('boy:zombie', boy, None)
+    
+    for Zombie in Zombies:
+        game_world.add_collision_pair('boy:zombie', None, Zombie)
+        
+    print(123)
 
 
 
@@ -44,8 +63,8 @@ def finish():
 
 def update():
     game_world.update()
-    # fill here
-
+    game_world.handle_collisions()
+    
 def draw():
     clear_canvas()
     game_world.render()

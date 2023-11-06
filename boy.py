@@ -5,6 +5,7 @@ from pico2d import get_time, load_image, load_font, clamp, SDL_KEYDOWN, SDL_KEYU
 from ball import Ball
 import game_world
 import game_framework
+from zombie import Zombie
 
 # state event check
 # ( state event type, event value )
@@ -46,14 +47,6 @@ RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 8
-
-
-
-
-
-
-
-
 
 
 
@@ -196,6 +189,7 @@ class Boy:
             self.ball_count -= 1
             ball = Ball(self.x, self.y, self.face_dir*10)
             game_world.add_object(ball)
+            game_world.add_collision_pair('ball:zombie', ball, Zombie)
 
     def update(self):
         self.state_machine.update()
@@ -206,5 +200,15 @@ class Boy:
     def draw(self):
         self.state_machine.draw()
         self.font.draw(self.x-10, self.y + 50, f'{self.ball_count:02d}', (255, 255, 0))
+        draw_rectangle(*self.get_bb())
 
-    # fill here
+
+    def get_bb(self):
+        return self.x - 20, self.y - 50, self.x + 20, self.y + 50
+    
+    def handle_collision(self, group, other):
+        if group == 'boy:ball':
+            self.ball_count += 1
+        if group == 'boy:zombie':
+            pass
+            
